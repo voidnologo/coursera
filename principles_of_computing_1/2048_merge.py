@@ -1,5 +1,6 @@
 import unittest
 
+
 def shift(line):
     return [x for x in line if x]
 
