@@ -20,6 +20,20 @@ class Game():
         self.height = height
         self.board = self.set_board(board)
 
+    def __str__(self):
+        separator = '+-----' * self.width + '+\n'
+        output = separator
+        for row in self.board:
+            output += '|' + '|'.join(['{:^5}'.format(x) for x in row]) + '|\n'
+            output += separator
+        return output
+
+    def play(self):
+        while True:
+            print(self)
+            move = input('>>')
+            self.take_turn(move)
+
     def set_board(self, board):
         if not board:
             return [[0 for col in range(self.width)] for row in range(self.height)]
@@ -74,3 +88,13 @@ class Game():
                 yield line[idx1]
                 idx1 = idx2
                 idx2 += 1
+
+
+if __name__ == '__main__':
+    grid = [
+        [0, 2, 4, 0],
+        [2, 2, 4, 4],
+        [2, 0, 2, 2],
+    ]
+    game = Game(board=grid)
+    game.play()
