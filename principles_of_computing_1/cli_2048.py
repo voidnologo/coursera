@@ -21,16 +21,35 @@ class Game():
         self.board = self.set_board(board)
 
     def __str__(self):
-        separator = '+-----' * self.width + '+\n'
-        output = separator
-        for row in self.board:
-            output += '|' + '|'.join(['{:^5}'.format(x) for x in row]) + '|\n'
-            output += separator
-        return output
+        return str(self.board)
+
+    def display_board(self):
+        top_left = '\u250c'
+        top_right = '\u2510'
+        top_middle = '\u252c'
+        middle_left = '\u251c'
+        middle_right = '\u2524'
+        middle_middle = '\u253c'
+        bottom_left = '\u2514'
+        bottom_right = '\u2518'
+        bottom_middle = '\u2534'
+        vertical = '\u2502'
+        horizontal = '\u2500'
+        h_cell = horizontal * 5
+        top_row = top_left + ((h_cell + top_middle) * (self.width - 1)) + h_cell + top_right + '\n'
+        middle_row = middle_left + ((h_cell + middle_middle) * (self.width - 1)) + h_cell + middle_right + '\n'
+        bottom_row = bottom_left + ((h_cell + bottom_middle) * (self.width - 1)) + h_cell + bottom_right + '\n'
+        display = top_row
+        for idx, row in enumerate(self.board):
+            display += vertical + vertical.join(['{:^5}'.format(x) for x in row]) + vertical + '\n'
+            if idx != len(self.board) - 1:
+                display += middle_row
+        display += bottom_row
+        return display
 
     def play(self):
         while True:
-            print(self)
+            print(self.display_board())
             move = input('>>')
             self.take_turn(move)
 
