@@ -1,4 +1,5 @@
 from collections import namedtuple
+import random
 
 
 Point = namedtuple('Point', ['x', 'y'])
@@ -41,7 +42,7 @@ class Game():
         bottom_row = bottom_left + ((h_cell + bottom_middle) * (self.width - 1)) + h_cell + bottom_right + '\n'
         display = top_row
         for idx, row in enumerate(self.board):
-            display += vertical + vertical.join(['{:^5}'.format(x) for x in row]) + vertical + '\n'
+            display += vertical + vertical.join(['{:^5}'.format(x if x else ' ') for x in row]) + vertical + '\n'
             if idx != len(self.board) - 1:
                 display += middle_row
         display += bottom_row
@@ -52,6 +53,11 @@ class Game():
             print(self.display_board())
             move = input('>>')
             self.take_turn(move)
+            empty_tiles = self.find_empty()
+            if not empty_tiles:
+                print('You Lose')
+                break
+            self.add_new_tile(empty_tiles)
 
     def set_board(self, board):
         if not board:
@@ -108,6 +114,13 @@ class Game():
                 idx1 = idx2
                 idx2 += 1
 
+    def find_empty(self):
+        return [Point(x, y) for x, row in enumerate(self.board) for y, value in enumerate(row) if value == 0]
+
+    def add_new_tile(self, empty_tiles):
+        value = random.choice([2] * 9 + [4])
+        location = random.choice(self.find_empty())
+        self.board[location.x][location.y] = value
 
 if __name__ == '__main__':
     grid = [

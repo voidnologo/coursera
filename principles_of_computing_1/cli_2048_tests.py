@@ -62,3 +62,64 @@ class GameTests(unittest.TestCase):
         ]
         self.game.take_turn('down')
         self.assertEqual(expected, self.game.board)
+
+    def test_find_empty_spots_to_add_new_tiles_in(self):
+        grid = [
+            [0, 2],
+            [2, 2],
+            [2, 0],
+        ]
+        game = Game(board=grid)
+        expected = [(0, 0), (2, 1)]
+        result = game.find_empty()
+        self.assertEqual(expected, result)
+
+    def test_add_new_value_to_empty_spot(self):
+        grid = [
+            [0, 2],
+            [2, 2],
+        ]
+        game = Game(board=grid)
+        empty = game.find_empty()
+        game.add_new_tile(empty)
+        self.assertIn(game.board[0][0], (2, 4))
+
+
+class Cli2048GridTests(unittest.TestCase):
+
+    def setUp(self):
+        self.grid = [
+            [0, 2, 4, 0],
+            [2, 2, 4, 4],
+            [2, 0, 2, 2],
+        ]
+        self.game = Game(board=self.grid)
+
+    def test_display_board_displays_game_object_correctly(self):
+        expected =  '┌─────┬─────┬─────┬─────┐\n'
+        expected += '│  0  │  2  │  4  │  0  │\n'
+        expected += '├─────┼─────┼─────┼─────┤\n'
+        expected += '│  2  │  2  │  4  │  4  │\n'
+        expected += '├─────┼─────┼─────┼─────┤\n'
+        expected += '│  2  │  0  │  2  │  2  │\n'
+        expected += '└─────┴─────┴─────┴─────┘\n'
+        self.assertEqual(expected, self.game.display_board())
+
+    def test_display_board_displays_game_with_different_dimensions(self):
+        grid = [
+            [0, 2],
+            [2, 2],
+            [2, 0],
+        ]
+        game = Game(board=grid)
+        expected =  '\u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2510\n'
+        expected += '\u2502  0  \u2502  2  \u2502\n'
+        expected += '\u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2524\n'
+        expected += '\u2502  2  \u2502  2  \u2502\n'
+        expected += '\u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2524\n'
+        expected += '\u2502  2  \u2502  0  \u2502\n'
+        expected += '\u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2518\n'
+        self.assertEqual(expected, game.display_board())
+
+    def test_str_returns_game_board(self):
+        self.assertEqual(str(self.grid), str(self.game))
