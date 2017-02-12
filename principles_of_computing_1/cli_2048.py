@@ -36,6 +36,7 @@ class Game():
         bottom_middle = '\u2534'
         vertical = '\u2502'
         horizontal = '\u2500'
+        #
         h_cell = horizontal * 5
         top_row = top_left + ((h_cell + top_middle) * (self.width - 1)) + h_cell + top_right + '\n'
         middle_row = middle_left + ((h_cell + middle_middle) * (self.width - 1)) + h_cell + middle_right + '\n'
