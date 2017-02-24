@@ -1,6 +1,5 @@
 import collections
 import random
-import time
 
 
 class InvalidMoveException(Exception):
@@ -18,6 +17,7 @@ class TTT():
     def __init__(self):
         self.x = Player('X', [])
         self.o = Player('O', [])
+        self.computer = self.x
         self.current_player = self.x
         self.open_spots = list(self.GRID_SPOTS[:])
 
@@ -25,12 +25,12 @@ class TTT():
         end = False
         while not end:
             print()
-            # print('X:', self.x.moves)
-            # print('O:', self.o.moves)
-            # print('Remaining spots:', self.open_spots)
             self.print_board()
             if self.open_spots:
-                move = int(input("{}'s turn >> ".format(self.current_player.name)))
+                if self.current_player == self.computer:
+                    move = self.computer_move()
+                else:
+                    move = int(input("{}'s turn >> ".format(self.current_player.name)))
                 try:
                     self.take_move(move)
                 except InvalidMoveException:
@@ -43,6 +43,11 @@ class TTT():
                 print('No open Moves')
                 end = True
             self.toggle_player()
+
+    def computer_move(self):
+        if len(self.open_spots) > 1:
+            return MonteCarloTTT(self.open_spots, self.x.moves, self.o.moves).play()
+        return self.open_spots[0]
 
     def print_board(self):
         def value(spot):
@@ -92,18 +97,13 @@ class MonteCarloTTT(TTT):
 
     def play(self):
         for cnt, _ in enumerate(range(self.TRIALS)):
-            print('Trial:', cnt, '\n')
             while self.move_list:
-                print()
                 self.choose_spot(self.current_player)
-                self.print_board()
                 if self.check_win(self.current_player.moves + self.current_player.new_moves):
                     self.score_game()
                     break
                 self.toggle_player()
-                time.sleep(1)
             self.reset()
-        print('BEST MOVE:', self.best_move())
         return self.best_move()
 
     def reset(self):
@@ -118,7 +118,6 @@ class MonteCarloTTT(TTT):
         else:
             self.score_moves(self.o.new_moves, self.SCORE_OTHER)
             self.score_moves(self.x.new_moves, -self.SCORE_CURRENT)
-        print('\nSCORES:', self.scores)
 
     def score_moves(self, moves, value):
         for spot in moves:
@@ -128,17 +127,9 @@ class MonteCarloTTT(TTT):
         high_score = max(self.scores.values())
         return next((k for k, v in self.scores.items() if v == high_score))
 
-    def print_board(self):
-        def value(spot):
-            if spot in self.x.moves + self.x.new_moves: return self.x.name
-            if spot in self.o.moves + self.o.new_moves: return self.o.name
-            return spot
-        for row in zip(*[iter(self.GRID_SPOTS)] * 3):
-            print(' '.join([str(value(i)) for i in row]))
-
 
 if __name__ == '__main__':
-    # game = TTT()
-    # game.play()
-    game = MonteCarloTTT([1, 2, 4, 7], [3, 5], [8, 9])
+    game = TTT()
     game.play()
+    # game = MonteCarloTTT([1, 2, 4, 7], [3, 5], [8, 9])
+    # game.play()
