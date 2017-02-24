@@ -1,5 +1,4 @@
 import unittest
-import timeit
 
 from game import TTT
 
@@ -19,7 +18,7 @@ class TTTTests(unittest.TestCase):
         win = self.sut.check_win(moves)
         self.assertFalse(win)
 
-    def test_take_turn(self):
+    def test_set_up_turns(self):
         expected = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         self.assertEqual(sorted(self.sut.move_list), expected)
 
