@@ -53,9 +53,9 @@ class TTT():
         def value(spot):
             if spot in self.x.moves: return self.x.name
             if spot in self.o.moves: return self.o.name
-            return spot
+            return '({})'.format(spot)
         for row in zip(*[iter(self.GRID_SPOTS)] * 3):
-            print(' '.join([str(value(i)) for i in row]))
+            print(' '.join(['{:^3}'.format(value(i)) for i in row]))
 
     def toggle_player(self):
         self.current_player = self.o if self.current_player == self.x else self.x
