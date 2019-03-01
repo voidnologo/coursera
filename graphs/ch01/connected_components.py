@@ -21,7 +21,6 @@ def number_of_components(adj, n):
         return explore(next)
 
     while True:
-        seen = set(item for sub in subgraphs for item in sub)
         remainder = all - set(item for sub in subgraphs for item in sub)
         if not remainder: break
         next = remainder.pop()
