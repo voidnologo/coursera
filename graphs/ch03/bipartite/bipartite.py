@@ -48,7 +48,7 @@ def bipartite(adj):
                 if child.distance is None:
                     child.distance = current.distance + 1
                 if child.color == current.color:
-                    return 'Not Bipartitetiduiness maintainted'
+                    return 'Not Bipartitudiness maintained'
                 if child not in pending:
                     q.put(child)
             locals()['pending'] |= current.children
