@@ -1,7 +1,7 @@
-from dataclasses import dataclass
-import pdb
-import sys
 from collections import deque, namedtuple
+from dataclasses import dataclass
+from pprint import pprint
+import sys
 
 
 Child = namedtuple('Child', ['vertex', 'cost'])
@@ -18,7 +18,11 @@ class Vertex():
         return self.idx
 
     def __repr__(self):
-        return f'<Vertex {self.idx} - {self.distance} - {list((_[0].idx, _[1]) for _ in self.children)}>'
+        return (
+            f'<Vertex {self.idx + 1}'
+            f' - {self.distance}'
+            f' - {list((c.vertex.idx + 1, c.cost) for c in self.children)}>'
+        )
 
 
 def build_graph(adj, cost):
@@ -29,37 +33,36 @@ def build_graph(adj, cost):
     return vertices
 
 
-def min_feed(graph):
-    Q = deque(sorted([v for v in graph], key=lambda x: x.distance))
+def min_distance(graph):
+    Q = deque(graph)
     while Q:
+        Q = deque(sorted((_ for _ in Q), key=lambda x: x.distance))
         yield Q.popleft()
 
 
 def display_route(graph, s, t):
-    thing = [f'Vertex {graph[t].idx}']
+    route = [f'Vertex {graph[t].idx + 1}']
     prev = graph[t].prev
     while prev and prev != s:
-        thing.append(f'Vertex {prev.idx}')
+        route.append(f'Vertex {prev.idx + 1}')
         prev = prev.prev
-    print(f'\nAnd the official order from {s} to {t}:')
-    print(' > '.join(reversed(thing)))
-    print('\nWith a cost of:')
-    print(graph[t].distance)
+    print(f'\nAnd the official order from {s + 1} to {t + 1}:')
+    print(' -> '.join(reversed(route)))
+    print(f'\nWith a cost of: {graph[t].distance}')
 
 
 def distance(adj, cost, s, t):
     graph = build_graph(adj, cost)
     graph[s].distance = 0
-    Q = min_feed(graph)
+    Q = min_distance(graph)
     for v in Q:
         v = graph[v.idx]
         for child in v.children:
             alt = v.distance + child.cost
-            print(v.idx, child.vertex.idx, child.vertex.distance, alt)
             if alt < child.vertex.distance:
                 child.vertex.distance = alt
                 child.vertex.prev = v
-    print(graph)
+    pprint(graph)
     display_route(graph, s, t)
 
 
